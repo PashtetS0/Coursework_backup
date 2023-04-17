@@ -1,0 +1,12 @@
+Для работы программы необходимы следующие модули:
+
+requests
+os
+time
+json
+pprint
+alive_progress
+configparser
+datetime
+ModuleYandexDisk
+ModuleVK
