@@ -18,6 +18,16 @@ class VKontakte:
         self.token = token
 
     def photos(self, owner_id, album_id, extended, photo_sizes, count):
+        if not owner_id.isdigit():
+            url = 'https://api.vk.com/method/utils.resolveScreenName'
+            params = {
+            'access_token': self.token,
+            'screen_name': owner_id,
+            'v': '5.131'
+            }
+            response = requests.get(url=url, params=params).json()
+            owner_id = response['response']['object_id']
+
         url = 'https://api.vk.com/method/photos.get'
         params = {
             'access_token': self.token,

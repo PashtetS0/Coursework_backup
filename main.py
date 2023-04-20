@@ -44,7 +44,9 @@ if __name__ == '__main__':
     # Получение и загрузка фотографий
     # -----------------------------------------------------------------------------------------------
     # Для тестов:
-    owner_id = '159222545'  # есть фото
+    # owner_id = '159222545'  # есть фото
+    #owner_id = '438192670'  # есть фото, но нужный размер (z) идет не в первых значениях по списку (в wall)
+    owner_id = 'pupsikisa'  # есть фото, но нужный размер (z) идет не в первых значениях по списку (в wall)
     # owner_id = '159222547'  # приватный профиль
     # owner_id = '15954778'  # нет нужного размера (z)
     # -----------------------------------------------------------------------------------------------
@@ -58,7 +60,7 @@ if __name__ == '__main__':
     print()
     extended = '1'  # дополнительные поля - likes, comments, tags, can_comment, reposts)
     photo_sizes = 'z'  # Размеры фото z - 1080x1024
-    print('По умолчанию будут сохранены фотографии размером 1080x1024')
+    print('По умолчанию будут сохранены фотографии размером 1080x1024 (шаблон "z")')
     if input('Если желаете указать вручную шаблон размера сохраняемых фотографий нажмите "y" - ') == 'y':
         photo_sizes = input('Укажите размер (x - 604px, y - 807px, z - 1080x1024) - ')
     print()
@@ -76,10 +78,10 @@ if __name__ == '__main__':
         print('Работа программы прервана')
         exit()
 
-    sizes = []  # Список для сохранения доступных размеров фото
+    sizes = set()  # Множество для сохранения доступных размеров фото
     for i in data['response']['items']:  # Проверка на существование фото с запрошенным размером
         for j in i['sizes']:
-            sizes.append(j['type'])
+            sizes.add(j['type'])
     if photo_sizes not in sizes:
         exec(clean)
         print(f'Фотографий выбранного размера "{photo_sizes}" у пользователя не найдено.')
@@ -101,8 +103,9 @@ if __name__ == '__main__':
                     "file_name": f"{i['likes']['count']}_{datetime.now().strftime('%H-%M-%S')}.jpg",
                     "size": j['type']
                 }
-        sd.append(d)
-        for_dump.append(res)
+        if 'd' in locals():  # Бывает что в идущих по списку первыми data['response']['items'] нет нужного j['type'], тогда, из-за отсутствия словаря "d" программа рушится. Но т.к. в других нужный размер есть, первые нужно пропустить. Проверка на наличие переменной.
+            sd.append(d)
+            for_dump.append(res)
 
     # Создание директории на диске:
     def search_folder(path_search):  # Проверка существования директории на диске
@@ -119,9 +122,10 @@ if __name__ == '__main__':
             exit()
         else:
             return 'ресурс существует'
-    directory = f'VK_Photos/User_{data["response"]["items"][0]["owner_id"]}'
-    # directory = f'VK_Photos/Users_{data["response"]["items"][0]["owner_id"]}/{album_id}'
-    # directory = f'VK_Photos/Users_{data["response"]["items"][0]["owner_id"]}/{datetime.now().date()}'
+    user_id = data["response"]["items"][0]["owner_id"]
+    directory = f'VK_Photos/User_{user_id}'
+    # directory = f'VK_Photos/Users_{user_id}/{album_id}'
+    # directory = f'VK_Photos/Users_{user_id}/{datetime.now().date()}'
     path = f'VK_Photos'  # Создание корневой директории
     answer = search_folder(path)
     if answer == 'create':
@@ -145,15 +149,17 @@ if __name__ == '__main__':
         for i in sd:
             targ_url = i['url']
             path = f'{directory}/{i["likes"]}_{datetime.now().strftime("%H-%M-%S")}.jpg'
-            print(path)
+            # print(path)
             YaDi.upload_url(path, targ_url)
             bar()
             # time.sleep(1)
 
-    with open('Result.json', 'wt') as file_object_result:  # Если все удачно, делаем дамп
+    with open(f'BackUp_{user_id}_{datetime.now().strftime("%H-%M-%S")}.json', 'wt') as file_object_result:  # Если все удачно, делаем дамп
         json.dump(for_dump, file_object_result, indent=3)
+
 # **********************************************************************
-        # Создание/удаление директории на диске:
+
+    # Создание/удаление директории на диске:
     # path = 'abcdwxyz/ttest/йцукен/2'
     # method = 'put', 'false'  # Создание директории
     # method = ('delete', 'false')  # Удаление директории в корзину
