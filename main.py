@@ -54,15 +54,15 @@ if __name__ == '__main__':
     album_id = 'wall'  # Идентификатор альбома wall
     print('По умолчанию будут сохранены фотографии из альбома "wall"')
     if input('Если желаете указать другой идентификатор альбома нажмите "y" - ') == 'y':
-        photo_sizes = input('Укажите идентификатор (wall, profile) - ')
+        album_id = input('Укажите идентификатор (wall, profile) - ')
     print()
     extended = '1'  # дополнительные поля - likes, comments, tags, can_comment, reposts)
     photo_sizes = 'z'  # Размеры фото z - 1080x1024
     print('По умолчанию будут сохранены фотографии размером 1080x1024')
     if input('Если желаете указать вручную шаблон размера сохраняемых фотографий нажмите "y" - ') == 'y':
         photo_sizes = input('Укажите размер (x - 604px, y - 807px, z - 1080x1024) - ')
-    count = '5'
     print()
+    count = '5'
     print('По умолчанию будет сохранено пять фотографий')
     if input('Если желаете указать вручную количество сохраняемых фотографий нажмите "y" - ') == 'y':
         count = input('Укажите количество - ')
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     sizes = []  # Список для сохранения доступных размеров фото
     for i in data['response']['items']:  # Проверка на существование фото с запрошенным размером
         for j in i['sizes']:
-                sizes.append(j['type'])
+            sizes.append(j['type'])
     if photo_sizes not in sizes:
         exec(clean)
         print(f'Фотографий выбранного размера "{photo_sizes}" у пользователя не найдено.')

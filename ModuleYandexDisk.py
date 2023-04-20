@@ -2,9 +2,10 @@ import requests
 from pprint import pprint
 
 class YandexDisk:
+
     '''
     Модуль содержит методы для работы с Яндекс Диск.
-    
+
     Доступны методы:
 
         upload_file()
@@ -29,6 +30,7 @@ class YandexDisk:
                 path = Путь к файлу или директории информацию о которых нужно получить
             Возвращает JSON с ответом API на запрос
     '''
+
     def __init__(self, token):
         self.token = token
 
@@ -76,7 +78,6 @@ class YandexDisk:
                 print(f"Сообщение - {res['message']}\n")
                 print('Работа программы прервана')
                 exit()
-
             print(f'Код завершения {response.status_code}\n\nПараметры:')
             pprint(response.json())
         if method == 'delete':
